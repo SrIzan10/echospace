@@ -1,12 +1,10 @@
-volumes:
-  psql:
 services:
   psql:
     image: postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: dfsjhkdswkjntelsmldbfvsgknl5t
+      POSTGRES_PASSWORD: S+xyPXPDcYNQtTy3hUNoC9eBwmsoGA
     volumes:
-      - psql:/var/lib/postgresql/data
+      - ./psql:/var/lib/postgresql/data
     ports:
       - 5555:5432

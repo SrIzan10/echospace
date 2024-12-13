@@ -3,7 +3,9 @@ import { Lucia, Session, User } from "lucia";
 import prisma from "../db";
 import { cache } from "react";
 import { cookies } from "next/headers";
+import { GitHub } from "arctic";
 
+export const github = new GitHub(process.env.GITHUB_CLIENT!, process.env.GITHUB_SECRET!, 'http://localhost:3000/auth/github/callback');
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 export const lucia = new Lucia(adapter, {
@@ -18,6 +20,7 @@ export const lucia = new Lucia(adapter, {
 	},
 	getUserAttributes: (attributes) => {
 		return {
+			githubId: attributes.githubId,
 			username: attributes.username
 		};
 	}
@@ -67,5 +70,6 @@ declare module "lucia" {
 }
 
 interface DatabaseUserAttributes {
+	githubId: string;
 	username: string;
 }

@@ -54,8 +54,7 @@ export default function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild className="cursor-pointer">
                 <Avatar>
-                  {/* TODO: Implement avatar system */}
-                  {/*<AvatarImage src={"https://srizan.dev/pfp.webp"} alt="@srizan" />*/}
+                  <AvatarImage src={`https://github.com/${user.username}.png`} alt={user.username} />
                   <AvatarFallback>{user.username}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
@@ -73,7 +72,7 @@ export default function Navbar() {
             </DropdownMenu>
           </>
         ) : (
-          <Link href="/auth/login">
+          <Link href="/auth">
             <Button variant="outline">Sign in</Button>
           </Link>
         )}
