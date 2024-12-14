@@ -18,8 +18,7 @@ import { ThemeSwitcher } from "../ThemeSwitcher/ThemeSwitcher"
 
 export const links = [
   { href: '/', name: 'Home' },
-  { href: 'https://github.com/SrIzan10/stack', name: 'Github' },
-  { href: '/protected', name: 'Protected route' }
+  { href: '/dashboard', name: 'Dashboard' }
 ]
 
 function NavbarLinks() {
