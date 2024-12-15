@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Project" ADD COLUMN     "rateLimitReq" INTEGER NOT NULL DEFAULT 5,
+ADD COLUMN     "rateLimitTime" INTEGER NOT NULL DEFAULT 60;

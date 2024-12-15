@@ -1,0 +1,94 @@
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { validateRequest } from '@/lib/auth';
+import prisma from '@/lib/db';
+import Link from 'next/link';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+
+// TODO: refactor to maybe append the no feedback message to the table div
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { user } = await validateRequest();
+  const project = await prisma.project.findFirst({
+    where: { id, userId: user!.id },
+    include: { feedback: true },
+  });
+
+  if (!project) {
+    return <div>Project not found</div>;
+  }
+
+  return (
+    <div className="p-4">
+      <div className="max-w-4xl mx-auto">
+      <Breadcrumb className='pb-5'>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{project.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+        <div className="flex items-center justify-between w-full pb-10">
+          <h2>{project.name}</h2>
+          <p className="text-muted-foreground ml-2 truncate">{project.description}</p>
+          <Link href={`/project/${id}/settings`}>
+            <Button>Settings</Button>
+          </Link>
+        </div>
+        {project.feedback.length === 0 ? (
+          <div className="border rounded-lg max-h-[32rem] overflow-y-auto text-center p-10">
+            <h2>No feedback!</h2>
+            <p className="text-muted-foreground mt-2">
+              Once you start receiving feedback, it will appear here.
+            </p>
+          </div>
+        ) : (
+          <div className="border rounded-lg max-h-[32rem] overflow-y-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">ID</TableHead>
+                  <TableHead>Message</TableHead>
+                  {project.customData.map((key) => (
+                    <TableHead key={key}>{key}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {/* using toReversed to not change the upstream array in case of other data treatments needed */}
+                {project.feedback.toReversed().map((feedback) => (
+                  <TableRow key={feedback.id}>
+                    <TableCell>{feedback.id}</TableCell>
+                    <TableCell>{feedback.message}</TableCell>
+                    {Object.entries(JSON.parse(feedback.customData)).map(([key, value]) => (
+                      <TableCell key={key}>{value as string}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

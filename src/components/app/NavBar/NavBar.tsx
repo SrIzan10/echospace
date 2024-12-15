@@ -18,7 +18,8 @@ import { ThemeSwitcher } from "../ThemeSwitcher/ThemeSwitcher"
 
 export const links = [
   { href: '/', name: 'Home' },
-  { href: '/dashboard', name: 'Dashboard' }
+  { href: '/dashboard', name: 'Dashboard' },
+  { href: '/create', name: 'Create' },
 ]
 
 function NavbarLinks() {

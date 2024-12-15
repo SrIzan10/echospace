@@ -1,11 +1,11 @@
-import { dummyData } from '@/app/(protected)/dashboard/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { Project } from '@prisma/client';
 import { Eye, Github } from 'lucide-react';
 import Link from 'next/link';
 
-export default function ProjectCard(props: (typeof dummyData)[0]) {
+export default function ProjectCard(props: Project) {
   return (
     <Card>
       <CardHeader>
