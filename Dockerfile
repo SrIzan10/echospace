@@ -31,6 +31,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/prisma ./prisma
 
 # Install production dependencies only
+RUN apk add --no-cache openssl
 RUN yarn install --frozen-lockfile --production && \
     yarn cache clean
 
