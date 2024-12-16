@@ -11,13 +11,10 @@ export default async function Page() {
     },
   });
   return (
-    <>
-      <h1>Dashboard</h1>
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4">
-        {db.map((d) => (
-          <ProjectCard key={d.id} {...d} />
-        ))}
-      </div>
-    </>
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4">
+      {db.map((d) => (
+        <ProjectCard key={d.id} {...d} />
+      ))}
+    </div>
   );
 }

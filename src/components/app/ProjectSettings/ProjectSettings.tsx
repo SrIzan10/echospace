@@ -147,8 +147,6 @@ export default function ProjectSettings(project: Project) {
                 <h3 className="text-sm font-medium">Example Request (cURL)</h3>
                 <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm block whitespace-pre overflow-x-auto">
                   {stripIndents`curl -X POST \\
-          -H "Content-Type: application/json" \\
-          -H "Authorization: Bearer YOUR_API_KEY" \\
           -d '${bodyGenNoIdent(project.customData)}' \\
           ${url}`}
                 </code>

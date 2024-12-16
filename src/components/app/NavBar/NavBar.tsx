@@ -17,7 +17,6 @@ import MobileNavbarLinks from "../MobileNavbarLinks/MobileNavbarLinks"
 import { ThemeSwitcher } from "../ThemeSwitcher/ThemeSwitcher"
 
 export const links = [
-  { href: '/', name: 'Home' },
   { href: '/dashboard', name: 'Dashboard' },
   { href: '/create', name: 'Create' },
 ]
@@ -41,7 +40,7 @@ export default function Navbar() {
     <>
       <nav className="flex items-center h-16 px-4 border-b gap-3 shrink-0">
         <Link href="/" className="hidden md:flex">
-          <Button>stack</Button>
+          <Button>echospace</Button>
         </Link>
         <MobileNavbarLinks />
         <div className="hidden md:flex">

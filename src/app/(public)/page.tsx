@@ -1,104 +1,86 @@
 // https://v0.dev/r/DxCSk58T8pM
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import LandingStepper from '@/components/app/LandingStepper/LandingStepper';
+import Video from '@/components/app/Video/Video';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function Home() {
   return (
     <>
       <main className="flex-1">
-          <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
-            <div className="container px-4 md:px-6">
-              <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                    The modern tech stack for your next(.js) project
-                  </h1>
-                  <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                    stack is a comprehensive tech stack that includes everything you need to build and deploy your next
-                    web application.
-                  </p>
-                </div>
-                <div className="space-x-4">
-                  <Link href="https://github.com/SrIzan10/stack">
-                    <Button>Start right NOW!</Button>
-                  </Link>
-                </div>
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                  User feedback for developers
+                </h1>
+                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+                  Save time and build better products with headless but streamlined feedback
+                  collection
+                </p>
+              </div>
+              <div className="flex gap-5">
+                <Link href="/auth">
+                  <Button>Get started</Button>
+                </Link>
+                <Button variant="secondary">Learn more</Button>
               </div>
             </div>
-          </section>
-          <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-900" id="features">
-            <div className="container px-4 md:px-6">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
-                    Key Features
-                  </div>
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                    Everything you need to build and deploy
-                  </h2>
-                  <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                    Stack is a comprehensive tech stack that includes everything you need to build and deploy your next
-                    web application.
-                  </p>
-                </div>
-              </div>
-              <div className="mx-auto max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
-                <div className="flex flex-col justify-center items-center text-center space-y-4">
-                  <ul className="grid gap-6">
-                    <li>
-                      <div className="grid gap-1">
-                        <h3 className="text-xl font-bold">Next.js</h3>
-                        <p className="text-gray-500 dark:text-gray-400">
-                          Build server-rendered React applications with Next.js.
+          </div>
+        </section>
+        <section
+          className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-900"
+          id="features"
+        >
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <LandingStepper
+                steps={[
+                  {
+                    title: 'Create a project',
+                    description:
+                      'Create a project and invite your team members (soon) to start collecting feedback',
+                    html: (
+                      <Video
+                        src="https://cloud-flt5r19p6-hack-club-bot.vercel.app/0kooha-2024-12-15-21-37-18.mp4"
+                        autoPlay
+                        muted
+                        className="w-full bg-gray-200 dark:bg-gray-800 rounded-lg"
+                      />
+                    ),
+                  },
+                  {
+                    title: 'Collect feedback',
+                    description:
+                      'Make a query to the API and create your own UI to collect user feedback',
+                    html: (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src="https://cloud-9x06b7lfe-hack-club-bot.vercel.app/0carbon_2_.png"
+                        alt="Code example"
+                        className="w-full rounded-lg"
+                      />
+                    ),
+                  },
+                  {
+                    title: 'Improve your product',
+                    description:
+                      'Use the tools provided to analyze feedback and improve your product!',
+                    html: (
+                      <div className="w-full h-64">
+                        <p className="flex justify-center items-center text-center">
+                          No example here, but Github integrations are on the way!
                         </p>
                       </div>
-                    </li>
-                    <li>
-                      <div className="grid gap-1">
-                        <h3 className="text-xl font-bold">Prisma</h3>
-                        <p className="text-gray-500 dark:text-gray-400">
-                          Access your database with Prisma, the best way to work with databases in Ethan&apos;s opinion
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="grid gap-1">
-                        <h3 className="text-xl font-bold">Tailwind CSS</h3>
-                        <p className="text-gray-500 dark:text-gray-400">
-                          Style your application with Tailwind CSS, the utility-first CSS framework.
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="grid gap-1">
-                        <h3 className="text-xl font-bold">shadcn/ui</h3>
-                        <p className="text-gray-500 dark:text-gray-400">
-                          The customizability of the components makes it one of the best UI libraries out there.
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="grid gap-1">
-                        <h3 className="text-xl font-bold">Vercel</h3>
-                        <p className="text-gray-500 dark:text-gray-400">
-                          Deploy your application to the cloud with Vercel, the serverless platform.
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="grid gap-1">
-                          <h3 className="text-xl font-bold">Lucia</h3>
-                          <p className="text-gray-500 dark:text-gray-400">
-                            Manage authentication with Lucia auth, the best selfhosted authentication library.
-                          </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+                    ),
+                  },
+                ]}
+              />
             </div>
-          </section>
-        </main>
-      </>
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
