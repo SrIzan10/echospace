@@ -1,4 +1,5 @@
 import prisma from '@/lib/db';
+import ratelimit from '@/lib/ratelimit';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,18 +15,33 @@ export async function POST(request: Request, { params }: { params: { projectId: 
     return Response.json({ success: false, error: 'Project not found' }, { status: 404 });
   }
 
+  // TODO: optimize to query redis instead of prisma first.
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip');
+  const queryRL = await ratelimit(
+    ip!,
+    queryProject.id,
+    queryProject.rateLimitReq,
+    queryProject.rateLimitTime
+  );
+  if (queryRL.exceeded) {
+    return Response.json(
+      {
+        success: false,
+        error: `Rate limit exceeded. Try again in ${queryRL.reset} seconds.`,
+      },
+      { status: 429, headers: { 'Retry-After': queryRL.reset.toString() } }
+    );
+  }
+
   // Convert customKeys to regular array and add message
   const customKeys = [...queryProject.customData, 'message'];
   const bodyKeys = Object.keys(body);
-  console.log(bodyKeys);
 
   // Find missing required keys (keys that should be in body but aren't)
   const keysLeft = customKeys.filter((key) => !bodyKeys.includes(key));
-  console.log(keysLeft);
 
   // Find invalid keys (keys in body that aren't allowed)
   const invalidKeys = bodyKeys.filter((key) => !customKeys.includes(key));
-  console.log(invalidKeys);
 
   if (keysLeft.length || invalidKeys.length) {
     return Response.json(

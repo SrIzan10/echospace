@@ -157,7 +157,7 @@ export default function ProjectSettings(project: Project) {
             <CardHeader>
               <CardTitle>Rate limiting</CardTitle>
               <CardDescription>
-                Manage your API rate limits. Not implemented but you can change it
+                Manage your API rate limits.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -166,14 +166,14 @@ export default function ProjectSettings(project: Project) {
                   {
                     name: 'requests',
                     label: 'Requests',
-                    placeholder: project.rateLimitReq.toString(),
+                    placeholder: 'The amount of requests you want to limit',
                     value: project.rateLimitReq.toString(),
                     type: 'number',
                   },
                   {
                     name: 'duration',
                     label: 'Duration',
-                    placeholder: project.rateLimitTime.toString(),
+                    placeholder: 'In seconds',
                     value: project.rateLimitTime.toString(),
                     type: 'number',
                   },

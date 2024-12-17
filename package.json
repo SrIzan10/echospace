@@ -24,6 +24,8 @@
     "arctic": "^2.3.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.0",
+    "ioredis": "^5.4.1",
+    "lru-cache": "^11.0.2",
     "lucia": "^3.1.1",
     "lucide-react": "^0.368.0",
     "next": "^14.2.3",

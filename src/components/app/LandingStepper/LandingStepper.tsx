@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { type ReactNode, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -39,7 +39,7 @@ export default function LandingStepper({ steps }: { steps: Step[] }) {
                 }`}
               >
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  className={`w-8 h-8 aspect-square rounded-[50%] flex items-center justify-center ${
                     index === currentStep ? 'bg-primary text-primary-foreground' : 'bg-muted'
                   }`}
                 >
@@ -61,9 +61,7 @@ export default function LandingStepper({ steps }: { steps: Step[] }) {
             </Button>
           </div>
         </div>
-        <div className="w-full lg:w-1/2">
-          {steps[currentStep].html}
-        </div>
+        <div className="w-full lg:w-1/2">{steps[currentStep].html}</div>
       </div>
     </div>
   );
