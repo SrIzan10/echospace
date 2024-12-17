@@ -21,19 +21,23 @@ import SubmitButton from '../SubmitButton/SubmitButton';
 import { useFormState } from 'react-dom';
 import React from 'react';
 import { toast } from 'sonner';
+import { createSchema } from '@/lib/forms/zod';
 
 export const schemaDb = [
   { name: 'projectSettings', zod: projectSettingsSchema },
   { name: 'ratelimitChange', zod: ratelimitChangeSchema },
   { name: 'customData', zod: customDataSchema },
+  { name: 'create', zod: createSchema },
 ] as const;
 
 export function UniversalForm<T extends z.ZodType>({
   fields,
   schemaName,
   action,
+  onActionComplete,
   defaultValues,
   submitText = 'Submit',
+  submitClassname,
 }: UniversalFormProps<T>) {
   const [state, formAction] = useFormState(action, null);
   const schema = schemaDb.find((s) => s.name === schemaName)?.zod;
@@ -53,6 +57,9 @@ export function UniversalForm<T extends z.ZodType>({
     if (state && !state.success) {
       // @ts-ignore
       toast.error(state.error);
+    }
+    if (state) {
+      onActionComplete?.(state);
     }
   }, [state]);
 
@@ -81,7 +88,7 @@ export function UniversalForm<T extends z.ZodType>({
             )}
           />
         ))}
-        <SubmitButton buttonText={submitText} />
+        <SubmitButton buttonText={submitText} className={submitClassname} />
       </form>
     </Form>
   );

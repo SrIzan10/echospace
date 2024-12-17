@@ -11,17 +11,19 @@ export default async function Page() {
       userId: user!.id,
     },
   });
+  if (db.length === 0) {
+    return (
+      <div className="text-center flex flex-col gap-4 pt-4">
+        <h2>No projects found</h2>
+        <p className="text-muted-foreground">Create a project to get started</p>
+        <Link href="/create">
+          <Button size={'sm'}>Create Project</Button>
+        </Link>
+      </div>
+    );
+  }
   return (
     <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-4">
-      {db.length === 0 && (
-        <div className="col-span-full text-center">
-          <h1 className="text-2xl font-bold">No projects found</h1>
-          <p className="text-muted-foreground">Create a project to get started</p>
-          <Link href="/create">
-            <Button size={'sm'}>Create Project</Button>
-          </Link>
-        </div>
-      )}
       {db.map((d) => (
         <ProjectCard key={d.id} {...d} />
       ))}

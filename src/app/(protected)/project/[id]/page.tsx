@@ -18,7 +18,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from '@/components/ui/breadcrumb';
 
 // TODO: refactor to maybe append the no feedback message to the table div
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -30,23 +30,29 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   });
 
   if (!project) {
-    return <div>Project not found</div>;
+    return (
+      <>
+        <h2>Project not found</h2>
+        <p>...or maybe you don&apos;t have permission!</p>
+      </>
+    );
   }
 
+  // maybe it's not clean enough but who cares
   return (
     <div className="p-4">
       <div className="max-w-4xl mx-auto">
-      <Breadcrumb className='pb-5'>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{project.name}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+        <Breadcrumb className="pb-5">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{project.name}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div className="flex items-center justify-between w-full pb-10">
           <h2>{project.name}</h2>
           <p className="text-muted-foreground ml-2 truncate">{project.description}</p>
@@ -54,16 +60,17 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             <Button>Settings</Button>
           </Link>
         </div>
-        {project.feedback.length === 0 ? (
-          <div className="border rounded-lg max-h-[32rem] overflow-y-auto text-center p-10">
-            <h2>No feedback!</h2>
-            <p className="text-muted-foreground mt-2">
-              Once you start receiving feedback, it will appear here.
-            </p>
-          </div>
-        ) : (
-          <div className="border rounded-lg max-h-[32rem] overflow-y-auto">
-            <Table>
+        <div className="border rounded-lg max-h-[32rem] overflow-y-auto">
+          {project.feedback.length === 0 && (
+            <div className="flex flex-col justify-center items-center p-10">
+              <h2>No feedback!</h2>
+              <p className="text-muted-foreground mt-2">
+                Once you start receiving feedback, it will appear here.
+              </p>
+            </div>
+          )}
+          <Table>
+            {project.feedback.length > 0 && (
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">ID</TableHead>
@@ -73,21 +80,25 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                   ))}
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {/* using toReversed to not change the upstream array in case of other data treatments needed */}
-                {project.feedback.toReversed().map((feedback) => (
-                  <TableRow key={feedback.id}>
-                    <TableCell>{feedback.id}</TableCell>
-                    <TableCell>{feedback.message}</TableCell>
-                    {Object.entries(JSON.parse(feedback.customData)).map(([key, value]) => (
-                      <TableCell key={key}>{value as string}</TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+            )}
+            <TableBody>
+              {/*
+                using toReversed to not change the upstream array in case of
+                other data treatments needed.
+                why js why 
+              */}
+              {project.feedback.toReversed().map((feedback) => (
+                <TableRow key={feedback.id}>
+                  <TableCell>{feedback.id}</TableCell>
+                  <TableCell>{feedback.message}</TableCell>
+                  {Object.entries(JSON.parse(feedback.customData)).map(([key, value]) => (
+                    <TableCell key={key}>{value as string}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
