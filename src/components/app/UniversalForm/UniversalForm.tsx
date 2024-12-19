@@ -3,7 +3,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Path, PathValue, useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -18,7 +17,7 @@ import { z } from 'zod';
 import type { UniversalFormProps } from './types';
 import { customDataSchema, projectSettingsSchema, ratelimitChangeSchema } from './zod';
 import SubmitButton from '../SubmitButton/SubmitButton';
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import React from 'react';
 import { toast } from 'sonner';
 import { createSchema } from '@/lib/forms/zod';
@@ -39,7 +38,7 @@ export function UniversalForm<T extends z.ZodType>({
   submitText = 'Submit',
   submitClassname,
 }: UniversalFormProps<T>) {
-  const [state, formAction] = useFormState(action, null);
+  const [state, formAction] = useActionState(action, null);
   const schema = schemaDb.find((s) => s.name === schemaName)?.zod;
 
   if (!schema) {

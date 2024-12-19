@@ -11,8 +11,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLab
 import { logout } from "@/lib/auth/actions"
 import { useSession } from "@/lib/providers/SessionProvider"
 import Link from "next/link"
-import { useState } from "react"
-import { useFormState } from "react-dom"
+import { useActionState } from "react"
 import MobileNavbarLinks from "../MobileNavbarLinks/MobileNavbarLinks"
 import { ThemeSwitcher } from "../ThemeSwitcher/ThemeSwitcher"
 
@@ -35,7 +34,7 @@ function NavbarLinks() {
 
 export default function Navbar() {
   const { user } = useSession();
-  const [, logoutAction] = useFormState(logout, null)
+  const [, logoutAction] = useActionState(logout, null)
   return (
     <>
       <nav className="flex items-center h-16 px-4 border-b gap-3 shrink-0">
