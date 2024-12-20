@@ -31,8 +31,8 @@ export default function GithubRepoChooser(props: Props) {
         setIsLoading(false);
       }
     });
-    console.log(props.selected);
     setValue(props.selected ?? '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
     props.onSelect(value);

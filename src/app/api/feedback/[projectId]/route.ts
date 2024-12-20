@@ -3,8 +3,8 @@ import ratelimit from '@/lib/ratelimit';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request, { params }: { params: { projectId: string } }) {
-  const { projectId } = params;
+export async function POST(request: Request, { params }: { params: Promise<{ projectId: string }> }) {
+  const { projectId } = await params;
   const body = await request.json();
   const queryProject = await prisma.project.findFirst({
     where: {
