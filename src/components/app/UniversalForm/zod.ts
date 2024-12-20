@@ -37,3 +37,10 @@ export const githubSettingsSchema = z.object({
 export const githubTestIssueSchema = z.object({
   id: z.string().nonempty(),
 });
+
+export const githubIssueCreateSchema = z.object({
+  feedback: z.string().nonempty(),
+  project: z.string().nonempty(),
+  message: z.string().nonempty(),
+  title: z.string().nonempty(),
+});

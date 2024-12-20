@@ -2,6 +2,7 @@
 
 import {
   customDataSchema,
+  githubIssueCreateSchema,
   githubSettingsSchema,
   githubTestIssueSchema,
   projectSettingsSchema,
@@ -11,7 +12,6 @@ import { validateRequest } from '../auth';
 import prisma from '../db';
 import zodVerify from '../zodVerify';
 import { createSchema } from './zod';
-import { Octokit } from '@octokit/core';
 import { octokitApp } from '../octokitApp';
 
 export async function create(prev: any, formData: FormData) {
@@ -172,6 +172,60 @@ export async function githubTestIssue(prev: any, formData: FormData) {
 
         if (createIssue.status === 201) {
           issueCreated = true;
+          break;
+        }
+      }
+    }
+  } catch (e) {
+    console.error(e);
+    return { success: false, error: e };
+  }
+
+  return { success: true };
+}
+
+export async function githubCreateIssue(prev: any, formData: FormData) {
+  const zod = await zodVerify(githubIssueCreateSchema, formData);
+  const { user } = await validateRequest();
+  if (!user) {
+    return { success: false, error: 'You must be logged in' };
+  }
+  if (!zod.success) {
+    return zod;
+  }
+
+  const project = await prisma.project.findUnique({
+    where: {
+      id: zod.data.project,
+    },
+    include: {
+      user: true,
+    },
+  });
+  if (!project) {
+    return { success: false, error: 'Project not found' };
+  }
+
+  try {
+    const [owner, repo] = project.github!.split('/').slice(-2);
+
+    for (const installationId of project.user.installations) {
+      const installation = await octokitApp.getInstallationOctokit(Number(installationId));
+      const getRepo = await installation
+        .request('GET /repos/{owner}/{repo}', {
+          owner,
+          repo,
+        })
+        .catch(() => ({ status: 404 }));
+      if (getRepo.status === 200) {
+        const createIssue = await installation.request('POST /repos/{owner}/{repo}/issues', {
+          owner,
+          repo,
+          title: zod.data.title,
+          body: `### Feedback\n\nFeedback ID: ${zod.data.feedback}\n\n### Message\n\n${zod.data.message}`,
+        });
+
+        if (createIssue.status === 201) {
           break;
         }
       }

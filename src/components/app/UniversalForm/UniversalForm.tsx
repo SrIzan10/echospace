@@ -17,6 +17,7 @@ import { z } from 'zod';
 import type { UniversalFormProps } from './types';
 import {
   customDataSchema,
+  githubIssueCreateSchema,
   githubSettingsSchema,
   githubTestIssueSchema,
   projectSettingsSchema,
@@ -27,6 +28,7 @@ import { useActionState } from 'react';
 import React from 'react';
 import { toast } from 'sonner';
 import { createSchema } from '@/lib/forms/zod';
+import { Textarea } from '@/components/ui/textarea';
 
 export const schemaDb = [
   { name: 'projectSettings', zod: projectSettingsSchema },
@@ -35,6 +37,7 @@ export const schemaDb = [
   { name: 'create', zod: createSchema },
   { name: 'githubSettings', zod: githubSettingsSchema },
   { name: 'githubTestIssue', zod: githubTestIssueSchema },
+  { name: 'githubIssueCreate', zod: githubIssueCreateSchema },
 ] as const;
 
 export function UniversalForm<T extends z.ZodType>({
@@ -58,7 +61,7 @@ export function UniversalForm<T extends z.ZodType>({
   const initialValues = React.useMemo(() => {
     const values: Record<string, any> = {};
     fields.forEach((field) => {
-      values[field.name] = field.value ?? '';  // Use empty string as fallback
+      values[field.name] = field.value ?? ''; // Use empty string as fallback
     });
     return { ...values, ...defaultValues };
   }, [fields, defaultValues]);
@@ -89,12 +92,20 @@ export function UniversalForm<T extends z.ZodType>({
               <FormItem>
                 {field.type !== 'hidden' && <FormLabel>{field.label}</FormLabel>}
                 <FormControl>
-                  <Input
-                    type={field.type || 'text'}
-                    placeholder={field.placeholder}
-                    {...formField}
-                    value={formField.value ?? ''}
-                  />
+                  {field.textArea ? (
+                    <Textarea
+                      placeholder={field.placeholder}
+                      {...formField}
+                      value={formField.value ?? ''}
+                    />
+                  ) : (
+                    <Input
+                      type={field.type || 'text'}
+                      placeholder={field.placeholder}
+                      {...formField}
+                      value={formField.value ?? ''}
+                    />
+                  )}
                 </FormControl>
                 {field.description && <FormDescription>{field.description}</FormDescription>}
                 <FormMessage />

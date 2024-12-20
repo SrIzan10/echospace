@@ -9,11 +9,12 @@ export type FormFieldConfig = {
   placeholder?: string;
   description?: string;
   value?: string;
+  textArea?: boolean;
 };
 
 export type UniversalFormProps<T extends z.ZodType> = {
   fields: FormFieldConfig[];
-  schemaName: typeof schemaDb[number]['name'];
+  schemaName: (typeof schemaDb)[number]['name'];
   action: (prev: any, formData: FormData) => void;
   onActionComplete?: (result: unknown) => void;
   defaultValues?: Partial<z.infer<T>>;

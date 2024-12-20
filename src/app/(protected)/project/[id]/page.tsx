@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Eye, Github } from 'lucide-react';
 import FeedbackView from '@/components/app/FeedbackView/FeedbackView';
+import GithubIssueCreate from '@/components/app/GithubIssueCreate/GithubIssueCreate';
 
 // TODO: refactor to maybe append the no feedback message to the table div
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -100,9 +101,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                   <TableCell className='flex gap-2'>
                     <FeedbackView feedback={feedback} />
                     {project.github && (
-                      <Button size={'icon'}>
-                        <Github className="w-5 h-5" />
-                      </Button>
+                      <GithubIssueCreate project={project} feedback={feedback} />
                     )}
                   </TableCell>
                 </TableRow>
