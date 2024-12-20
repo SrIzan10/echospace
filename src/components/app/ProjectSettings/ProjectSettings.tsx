@@ -4,7 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Project } from '@prisma/client';
 import { UniversalForm } from '../UniversalForm/UniversalForm';
-import { customData, editProject, ratelimitChange } from '@/lib/forms/actions';
+import {
+  customData,
+  editProject,
+  githubSettings,
+  githubTestIssue,
+  ratelimitChange,
+} from '@/lib/forms/actions';
 import { bodyGen, bodyGenNoIdent } from '@/lib/bodyGen';
 import {
   Breadcrumb,
@@ -14,9 +20,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import GithubRepoChooser from '../GithubRepoChooser/GithubRepoChooser';
+import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ProjectSettings(project: Project) {
-  const url = `https://${window.location.hostname}/api/feedback/${project.id}`;
+  const router = useRouter();
+  const [ghRepo, setGhRepo] = React.useState('');
+  const apiUrl = `https://${window.location.hostname}/api/feedback/${project.id}`;
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
       <Breadcrumb className="pb-5">
@@ -109,8 +122,81 @@ export default function ProjectSettings(project: Project) {
           </div>
         </TabsContent>
 
-        <TabsContent value="github">
-          <h2>Soon™</h2>
+        <TabsContent value="github" className="grid gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>GitHub Integration</CardTitle>
+              <CardDescription>Connect your project to GitHub</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GithubRepoChooser
+                onSelect={(repo) => {
+                  setGhRepo(`https://github.com/${repo}`);
+                }}
+                selected={project.github!.replace('https://github.com/', '')}
+              />
+              <p className="text-muted-foreground text-xs mt-2">
+                Not the results you were expecting? You may have not allowed your user in the{' '}
+                <Link
+                  href="https://github.com/apps/echospacedev/installations/new"
+                  target="_blank"
+                  className="text-primary"
+                >
+                  installation settings
+                </Link>
+                .
+              </p>
+              <UniversalForm
+                fields={[
+                  {
+                    name: 'github',
+                    label: 'GitHub Repository',
+                    type: 'hidden',
+                    value: ghRepo,
+                  },
+                  {
+                    name: 'id',
+                    label: 'ID',
+                    type: 'hidden',
+                    value: project.id,
+                  },
+                ]}
+                key={ghRepo}
+                schemaName={'githubSettings'}
+                action={githubSettings}
+                onActionComplete={() => router.refresh()}
+              />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Issue submission testing</CardTitle>
+              <CardDescription>Make sure your setup works!</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {project.github ? (
+                <UniversalForm
+                  fields={[
+                    {
+                      name: 'id',
+                      label: 'ID',
+                      type: 'hidden',
+                      value: project.id,
+                    },
+                  ]}
+                  schemaName={'githubTestIssue'}
+                  action={githubTestIssue}
+                  submitText="Create test issue"
+                  submitClassname="!mt-0"
+                />
+              ) : (
+                <p className="text-muted-foreground text-sm">
+                  You need to connect your project to a GitHub repository before you can test issue
+                  submission.
+                </p>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="api" className="space-y-5">
@@ -123,20 +209,13 @@ export default function ProjectSettings(project: Project) {
               <div className="space-y-2">
                 <h3 className="text-sm font-medium">Endpoint</h3>
                 <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
-                  {url}
+                  {apiUrl}
                 </code>
               </div>
               <div className="space-y-2">
                 <h3 className="text-sm font-medium">Method</h3>
                 <p className="text-sm">POST</p>
               </div>
-              {/* <div className="space-y-2">
-                <h3 className="text-sm font-medium">Headers</h3>
-                <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm block whitespace-pre">
-                  {`Content-Type: application/json
-        Authorization: Bearer YOUR_API_KEY`}
-                </code>
-              </div> */}
               <div className="space-y-2">
                 <h3 className="text-sm font-medium">Body</h3>
                 <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm block whitespace-pre">
@@ -148,7 +227,7 @@ export default function ProjectSettings(project: Project) {
                 <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm block whitespace-pre overflow-x-auto">
                   {stripIndents`curl -X POST \\
           -d '${bodyGenNoIdent(project.customData)}' \\
-          ${url}`}
+          ${apiUrl}`}
                 </code>
               </div>
             </CardContent>
@@ -156,9 +235,7 @@ export default function ProjectSettings(project: Project) {
           <Card>
             <CardHeader>
               <CardTitle>Rate limiting</CardTitle>
-              <CardDescription>
-                Manage your API rate limits.
-              </CardDescription>
+              <CardDescription>Manage your API rate limits.</CardDescription>
             </CardHeader>
             <CardContent>
               <UniversalForm

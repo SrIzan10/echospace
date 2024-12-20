@@ -15,7 +15,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { z } from 'zod';
 import type { UniversalFormProps } from './types';
-import { customDataSchema, projectSettingsSchema, ratelimitChangeSchema } from './zod';
+import {
+  customDataSchema,
+  githubSettingsSchema,
+  githubTestIssueSchema,
+  projectSettingsSchema,
+  ratelimitChangeSchema,
+} from './zod';
 import SubmitButton from '../SubmitButton/SubmitButton';
 import { useActionState } from 'react';
 import React from 'react';
@@ -27,6 +33,8 @@ export const schemaDb = [
   { name: 'ratelimitChange', zod: ratelimitChangeSchema },
   { name: 'customData', zod: customDataSchema },
   { name: 'create', zod: createSchema },
+  { name: 'githubSettings', zod: githubSettingsSchema },
+  { name: 'githubTestIssue', zod: githubTestIssueSchema },
 ] as const;
 
 export function UniversalForm<T extends z.ZodType>({

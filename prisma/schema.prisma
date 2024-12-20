@@ -14,11 +14,12 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(cuid())
-  githubId String    @unique
-  username String
-  projects Project[]
-  sessions Session[]
+  id            String    @id @default(cuid())
+  githubId      String    @unique
+  username      String
+  installations String[]
+  projects      Project[]
+  sessions      Session[]
 }
 
 model Session {
@@ -32,7 +33,7 @@ model Project {
   id            String   @id @default(cuid())
   name          String
   description   String
-  github        String
+  github        String?
   customData    String[]
   rateLimitReq  Int      @default(5)
   rateLimitTime Int      @default(60)

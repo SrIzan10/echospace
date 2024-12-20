@@ -1,16 +1,24 @@
-'use server'
+'use server';
 
-import { customDataSchema, projectSettingsSchema, ratelimitChangeSchema } from "@/components/app/UniversalForm/zod";
-import { validateRequest } from "../auth";
-import prisma from "../db";
-import zodVerify from "../zodVerify";
-import { createSchema } from "./zod";
+import {
+  customDataSchema,
+  githubSettingsSchema,
+  githubTestIssueSchema,
+  projectSettingsSchema,
+  ratelimitChangeSchema,
+} from '@/components/app/UniversalForm/zod';
+import { validateRequest } from '../auth';
+import prisma from '../db';
+import zodVerify from '../zodVerify';
+import { createSchema } from './zod';
+import { Octokit } from '@octokit/core';
+import { octokitApp } from '../octokitApp';
 
 export async function create(prev: any, formData: FormData) {
   const zod = await zodVerify(createSchema, formData);
   const { user } = await validateRequest();
   if (!user) {
-    return { success: false, error: "You must be logged in" };
+    return { success: false, error: 'You must be logged in' };
   }
   if (!zod.success) {
     return zod;
@@ -24,7 +32,7 @@ export async function create(prev: any, formData: FormData) {
           id: user.id,
         },
       },
-    }
+    },
   });
   return { success: true, id: dbCreate.id };
 }
@@ -33,7 +41,7 @@ export async function editProject(prev: any, formData: FormData) {
   const zod = await zodVerify(projectSettingsSchema, formData);
   const { user } = await validateRequest();
   if (!user) {
-    return { success: false, error: "You must be logged in" };
+    return { success: false, error: 'You must be logged in' };
   }
   if (!zod.success) {
     return zod;
@@ -45,7 +53,7 @@ export async function editProject(prev: any, formData: FormData) {
     },
     data: {
       ...zod.data,
-    }
+    },
   });
   return { success: true, id: dbUpdate.id };
 }
@@ -55,7 +63,7 @@ export async function ratelimitChange(prev: any, formData: FormData) {
   const zod = await zodVerify(ratelimitChangeSchema, formData);
   const { user } = await validateRequest();
   if (!user) {
-    return { success: false, error: "You must be logged in" };
+    return { success: false, error: 'You must be logged in' };
   }
   if (!zod.success) {
     return zod;
@@ -68,7 +76,7 @@ export async function ratelimitChange(prev: any, formData: FormData) {
     data: {
       rateLimitReq: zod.data.requests,
       rateLimitTime: zod.data.duration,
-    }
+    },
   });
   return { success: true, id: dbUpdate.id };
 }
@@ -77,7 +85,7 @@ export async function customData(prev: any, formData: FormData) {
   const zod = await zodVerify(customDataSchema, formData);
   const { user } = await validateRequest();
   if (!user) {
-    return { success: false, error: "You must be logged in" };
+    return { success: false, error: 'You must be logged in' };
   }
   if (!zod.success) {
     return zod;
@@ -92,7 +100,86 @@ export async function customData(prev: any, formData: FormData) {
     },
     data: {
       customData: splitted,
-    }
+    },
   });
   return { success: true, id: dbUpdate.id };
+}
+
+export async function githubSettings(prev: any, formData: FormData) {
+  const zod = await zodVerify(githubSettingsSchema, formData);
+  const { user, session } = await validateRequest();
+  if (!user) {
+    return { success: false, error: 'You must be logged in' };
+  }
+  if (!zod.success) {
+    return zod;
+  }
+
+  const dbUpdate = await prisma.project.update({
+    where: {
+      id: zod.data.id,
+    },
+    data: {
+      github: zod.data.github,
+    },
+  });
+  return { success: true, id: dbUpdate.id };
+}
+
+export async function githubTestIssue(prev: any, formData: FormData) {
+  const zod = await zodVerify(githubTestIssueSchema, formData);
+  const { user } = await validateRequest();
+  if (!user) {
+    return { success: false, error: 'You must be logged in' };
+  }
+  if (!zod.success) {
+    return zod;
+  }
+
+  const project = await prisma.project.findUnique({
+    where: {
+      id: zod.data.id,
+    },
+    include: {
+      user: true,
+    },
+  });
+  if (!project) {
+    return { success: false, error: 'Project not found' };
+  }
+
+  try {
+    const [owner, repo] = project.github!.split('/').slice(-2);
+    let issueCreated = false;
+
+    for (const installationId of project.user.installations) {
+      if (issueCreated) break;
+
+      const installation = await octokitApp.getInstallationOctokit(Number(installationId));
+      const getRepo = await installation
+        .request('GET /repos/{owner}/{repo}', {
+          owner,
+          repo,
+        })
+        .catch(() => ({ status: 404 }));
+      if (getRepo.status === 200) {
+        const createIssue = await installation.request('POST /repos/{owner}/{repo}/issues', {
+          owner,
+          repo,
+          title: 'Test issue',
+          body: "### You are all set! 🎉\n\nIf you're reading this, the test issue has been created successfully!",
+        });
+
+        if (createIssue.status === 201) {
+          issueCreated = true;
+          break;
+        }
+      }
+    }
+  } catch (e) {
+    console.error(e);
+    return { success: false, error: e };
+  }
+
+  return { success: true };
 }

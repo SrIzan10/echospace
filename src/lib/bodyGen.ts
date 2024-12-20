@@ -6,6 +6,5 @@ export const bodyGen = (customData: string[]) => {
 };
 
 export const bodyGenNoIdent = (customData: string[]) => {
-  console.log(bodyGen(customData));
   return JSON.stringify(JSON.parse(bodyGen(customData)));
 }

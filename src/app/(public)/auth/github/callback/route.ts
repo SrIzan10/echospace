@@ -9,6 +9,15 @@ export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
+  const setupAction = url.searchParams.get('setup_action');
+  if (setupAction === 'install') {
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: '/',
+      },
+    });
+  }
   const storedState = (await cookies()).get('github_oauth_state')?.value ?? null;
   if (!code || !state || !storedState || state !== storedState) {
     return new Response(null, {
@@ -66,6 +75,7 @@ export async function GET(request: Request): Promise<Response> {
     console.error(e);
     if (e instanceof OAuth2RequestError) {
       // invalid code
+      console.error(e);
       return new Response(null, {
         status: 400,
       });

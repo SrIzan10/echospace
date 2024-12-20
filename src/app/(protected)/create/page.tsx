@@ -26,14 +26,9 @@ export default function CreateForm() {
               placeholder: 'A developer-centric user feedback platform.',
               description: 'Describe the project a bit.',
             },
-            {
-              name: 'github',
-              label: 'Github',
-              placeholder: 'https://github.com/SrIzan10/echospace',
-            },
           ]}
           submitText="Submit"
-          submitClassname="w-full"
+          submitClassname="w-full !mt-5"
           onActionComplete={(res) => {
             // @ts-ignore yea
             if (res && res.id) {
