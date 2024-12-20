@@ -127,8 +127,8 @@ export default function ProjectSettings(project: Project) {
         <TabsContent value="github" className="grid gap-4">
           <Card>
             <CardHeader>
-              <CardTitle>GitHub Integration</CardTitle>
-              <CardDescription>Connect your project to GitHub</CardDescription>
+              <CardTitle>Github Integration</CardTitle>
+              <CardDescription>Connect your project to Github</CardDescription>
             </CardHeader>
             <CardContent>
               <GithubRepoChooser

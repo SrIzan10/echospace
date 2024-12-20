@@ -19,6 +19,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Eye, Github } from 'lucide-react';
+import FeedbackView from '@/components/app/FeedbackView/FeedbackView';
 
 // TODO: refactor to maybe append the no feedback message to the table div
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -73,11 +75,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             {project.feedback.length > 0 && (
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">ID</TableHead>
+                  <TableHead className="w-[60px]">ID</TableHead>
                   <TableHead>Message</TableHead>
                   {project.customData.map((key) => (
                     <TableHead key={key}>{key}</TableHead>
                   ))}
+                  <TableHead className="w-[100px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
             )}
@@ -85,7 +88,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
               {/*
                 using toReversed to not change the upstream array in case of
                 other data treatments needed.
-                why js why 
+                why js why
               */}
               {project.feedback.toReversed().map((feedback) => (
                 <TableRow key={feedback.id}>
@@ -94,6 +97,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                   {Object.entries(JSON.parse(feedback.customData)).map(([key, value]) => (
                     <TableCell key={key}>{value as string}</TableCell>
                   ))}
+                  <TableCell className='flex gap-2'>
+                    <FeedbackView feedback={feedback} />
+                    {project.github && (
+                      <Button size={'icon'}>
+                        <Github className="w-5 h-5" />
+                      </Button>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
