@@ -46,29 +46,36 @@ export function UniversalForm<T extends z.ZodType>({
   submitText = 'Submit',
   submitClassname,
 }: UniversalFormProps<T>) {
-  const [state, formAction] = useActionState(action, null);
+  // @ts-ignore idk why this error is happening, first apprearing on the react 19 update.
+  const [state, formAction] = useActionState<{ success: boolean; error?: string }>(action, null);
   const schema = schemaDb.find((s) => s.name === schemaName)?.zod;
 
   if (!schema) {
     throw new Error(`Schema "${schemaName}" not found`);
   }
 
+  // Initialize default values for all fields
+  const initialValues = React.useMemo(() => {
+    const values: Record<string, any> = {};
+    fields.forEach((field) => {
+      values[field.name] = field.value ?? '';  // Use empty string as fallback
+    });
+    return { ...values, ...defaultValues };
+  }, [fields, defaultValues]);
+
   const form = useForm<z.infer<T>>({
     resolver: zodResolver(schema),
-    defaultValues: (defaultValues || {}) as z.infer<T>,
+    defaultValues: initialValues as z.infer<T>,
   });
 
-  // pretend nothing is happening on here
   React.useEffect(() => {
-    // @ts-ignore
     if (state && !state.success) {
-      // @ts-ignore
       toast.error(state.error);
     }
     if (state) {
       onActionComplete?.(state);
     }
-  }, [state]);
+  }, [state, onActionComplete]);
 
   return (
     <Form {...form}>
@@ -78,7 +85,6 @@ export function UniversalForm<T extends z.ZodType>({
             key={field.name}
             control={form.control}
             name={field.name as Path<z.infer<T>>}
-            defaultValue={field.value as PathValue<z.infer<T>, Path<z.infer<T>>>}
             render={({ field: formField }) => (
               <FormItem>
                 {field.type !== 'hidden' && <FormLabel>{field.label}</FormLabel>}
@@ -87,6 +93,7 @@ export function UniversalForm<T extends z.ZodType>({
                     type={field.type || 'text'}
                     placeholder={field.placeholder}
                     {...formField}
+                    value={formField.value ?? ''}
                   />
                 </FormControl>
                 {field.description && <FormDescription>{field.description}</FormDescription>}

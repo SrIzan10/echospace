@@ -23,12 +23,14 @@ import {
 import GithubRepoChooser from '../GithubRepoChooser/GithubRepoChooser';
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 export default function ProjectSettings(project: Project) {
-  const router = useRouter();
   const [ghRepo, setGhRepo] = React.useState('');
+  const [hasSubmitted, setHasSubmitted] = React.useState(false);
   const apiUrl = `https://${window.location.hostname}/api/feedback/${project.id}`;
+  React.useEffect(() => {
+    setHasSubmitted(project.github !== '');
+  }, [project.github]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
@@ -133,7 +135,7 @@ export default function ProjectSettings(project: Project) {
                 onSelect={(repo) => {
                   setGhRepo(`https://github.com/${repo}`);
                 }}
-                selected={project.github!.replace('https://github.com/', '')}
+                selected={project.github ? project.github.replace('https://github.com/', '') : ''}
               />
               <p className="text-muted-foreground text-xs mt-2">
                 Not the results you were expecting? You may have not allowed your user in the{' '}
@@ -164,7 +166,7 @@ export default function ProjectSettings(project: Project) {
                 key={ghRepo}
                 schemaName={'githubSettings'}
                 action={githubSettings}
-                onActionComplete={() => router.refresh()}
+                onActionComplete={() => setHasSubmitted(true)}
               />
             </CardContent>
           </Card>
@@ -174,7 +176,7 @@ export default function ProjectSettings(project: Project) {
               <CardDescription>Make sure your setup works!</CardDescription>
             </CardHeader>
             <CardContent>
-              {project.github ? (
+              {hasSubmitted ? (
                 <UniversalForm
                   fields={[
                     {
