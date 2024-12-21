@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -10,13 +9,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import type { Feedback, Project } from '@prisma/client';
-import { Github } from 'lucide-react';
+import { Github, Wand } from 'lucide-react';
 import { UniversalForm } from '../UniversalForm/UniversalForm';
 import { githubCreateIssue } from '@/lib/forms/actions';
 import React from 'react';
+import AiFill from '../AiFill/AiFill';
 
 export default function GithubIssueCreate(props: Props) {
   const [open, setOpen] = React.useState(false);
+  const [title, setTitle] = React.useState('');
+  const [message, setMessage] = React.useState(props.feedback.message);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -34,13 +37,15 @@ export default function GithubIssueCreate(props: Props) {
               type: 'text',
               name: 'title',
               label: 'Title',
+              value: title,
             },
             {
               type: 'text',
               name: 'message',
               textArea: true,
+              textAreaRows: 8,
               label: 'Message',
-              value: props.feedback.message,
+              value: message,
             },
             {
               type: 'hidden',
@@ -56,10 +61,20 @@ export default function GithubIssueCreate(props: Props) {
             },
           ]}
           submitText={'Create issue'}
-          submitClassname="float-right !mt-5"
+          submitButtonDivClassname="float-right"
           schemaName={'githubIssueCreate'}
           action={githubCreateIssue}
           onActionComplete={() => setOpen(false)}
+          otherSubmitButton={
+            <AiFill
+              message={props.feedback.message}
+              onRespond={(title, message) => {
+                setTitle(title);
+                setMessage(message);
+              }}
+            />
+          }
+          key={`${title}-${message}`}
         />
       </DialogContent>
     </Dialog>

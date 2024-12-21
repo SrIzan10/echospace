@@ -10,6 +10,7 @@ export type FormFieldConfig = {
   description?: string;
   value?: string;
   textArea?: boolean;
+  textAreaRows?: number;
 };
 
 export type UniversalFormProps<T extends z.ZodType> = {
@@ -20,4 +21,6 @@ export type UniversalFormProps<T extends z.ZodType> = {
   defaultValues?: Partial<z.infer<T>>;
   submitText?: string;
   submitClassname?: string;
+  otherSubmitButton?: React.ReactNode;
+  submitButtonDivClassname?: string;
 };

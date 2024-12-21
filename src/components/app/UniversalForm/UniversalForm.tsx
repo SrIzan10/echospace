@@ -29,6 +29,7 @@ import React from 'react';
 import { toast } from 'sonner';
 import { createSchema } from '@/lib/forms/zod';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 
 export const schemaDb = [
   { name: 'projectSettings', zod: projectSettingsSchema },
@@ -48,6 +49,8 @@ export function UniversalForm<T extends z.ZodType>({
   defaultValues,
   submitText = 'Submit',
   submitClassname,
+  otherSubmitButton,
+  submitButtonDivClassname,
 }: UniversalFormProps<T>) {
   // @ts-ignore idk why this error is happening, first apprearing on the react 19 update.
   const [state, formAction] = useActionState<{ success: boolean; error?: string }>(action, null);
@@ -97,6 +100,7 @@ export function UniversalForm<T extends z.ZodType>({
                       placeholder={field.placeholder}
                       {...formField}
                       value={formField.value ?? ''}
+                      rows={field.textAreaRows ?? 5}
                     />
                   ) : (
                     <Input
@@ -113,7 +117,10 @@ export function UniversalForm<T extends z.ZodType>({
             )}
           />
         ))}
-        <SubmitButton buttonText={submitText} className={submitClassname} />
+        <div className={cn("flex gap-2 py-2", submitButtonDivClassname)}>
+          {otherSubmitButton}
+          <SubmitButton buttonText={submitText} className={submitClassname} />
+        </div>
       </form>
     </Form>
   );

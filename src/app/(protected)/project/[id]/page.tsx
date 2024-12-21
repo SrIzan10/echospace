@@ -23,7 +23,6 @@ import { Eye, Github } from 'lucide-react';
 import FeedbackView from '@/components/app/FeedbackView/FeedbackView';
 import GithubIssueCreate from '@/components/app/GithubIssueCreate/GithubIssueCreate';
 
-// TODO: refactor to maybe append the no feedback message to the table div
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { user } = await validateRequest();
