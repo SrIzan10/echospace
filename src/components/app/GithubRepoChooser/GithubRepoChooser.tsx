@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import * as React from 'react';
@@ -15,13 +16,13 @@ import {
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { getRepos } from './getRepos';
-import { set } from 'zod';
 
 export default function GithubRepoChooser(props: Props) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
   const [repos, setRepos] = React.useState<string[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [displayText, setDisplayText] = React.useState('Select a repository');
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -32,12 +33,19 @@ export default function GithubRepoChooser(props: Props) {
       }
     });
     setValue(props.selected ?? '');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
     props.onSelect(value);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
+  React.useEffect(() => {
+    if (value.length > 0) {
+      setDisplayText(repos.find((repo) => repo === value)!);
+    } else if (repos.length === 0) {
+      setDisplayText('No repositories found');
+    } else {
+      setDisplayText('Select a repository');
+    }
+  }, [value, repos]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -49,14 +57,7 @@ export default function GithubRepoChooser(props: Props) {
           className="w-full justify-between"
           disabled={repos.length === 0}
         >
-          {/* TODO: refactor whatever this is. */}
-          {isLoading
-            ? 'Loading repositories (may take a while)...'
-            : value.length > 0
-            ? repos.find((repo) => repo === value)
-            : repos.length === 0
-            ? 'No repositories found'
-            : 'Select a repository'}
+          {isLoading ? 'Loading...' : displayText}
           <ChevronsUpDown className="opacity-50 w-4 h-4" />
         </Button>
       </PopoverTrigger>
