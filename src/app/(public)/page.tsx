@@ -70,7 +70,9 @@ export default function Home() {
                     html: (
                       <div className="w-full h-64">
                         <p className="flex justify-center items-center text-center">
-                          No example here, but Github integrations are on the way!
+                          The new github integration will help you out with creating issues to
+                          improve your project. It is as simple as installing an app and selecting a
+                          repo!
                         </p>
                       </div>
                     ),
