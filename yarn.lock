@@ -2028,10 +2028,10 @@ anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-arctic@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/arctic/-/arctic-2.3.1.tgz#2cc9c5f2610ffdca0228b623a17cd9c8abf13b7f"
-  integrity sha512-bnmPYWbPtrQcneG/dmZIdvDeZ7pYhHqd4hYTbOR5LB9f429XLHiE4VnmKmJCPkw+G2CsG689WS+NDwa5UKsigA==
+arctic@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/arctic/-/arctic-2.3.3.tgz#a68078ac38288809ee9e8a18090b91ee35bc8002"
+  integrity sha512-f42+wyM0LKNwUY0TV3fSH1Fnsr/klcZi42XfWFvlNP7Ag8aBX92FaKQIU5xBQzxvvy7jg02tF567LsIlmEujKg==
   dependencies:
     "@oslojs/crypto" "1.0.1"
     "@oslojs/encoding" "1.1.0"
