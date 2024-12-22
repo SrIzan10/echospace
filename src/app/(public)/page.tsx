@@ -2,7 +2,7 @@ import CloseTabNotice from '@/components/app/CloseTabNotice/CloseTabNotice';
 import LandingStepper from '@/components/app/LandingStepper/LandingStepper';
 import Video from '@/components/app/Video/Video';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Github } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -35,7 +35,12 @@ export default function Home() {
                 <Link href="/auth">
                   <Button>Get started</Button>
                 </Link>
-                <Button variant="secondary">Learn more</Button>
+                <Link href="https://github.com/SrIzan10/echospace" target="_blank">
+                  <Button variant="secondary" className="flex">
+                    <Github className="w-4 h-4 mr-2" />
+                    Open source!
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
