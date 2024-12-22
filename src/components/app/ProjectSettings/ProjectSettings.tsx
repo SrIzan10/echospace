@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { Project } from '@prisma/client';
+import type { Project, User, UserProject } from '@prisma/client';
 import { UniversalForm } from '../UniversalForm/UniversalForm';
 import {
   customData,
@@ -23,8 +23,10 @@ import {
 import GithubRepoChooser from '../GithubRepoChooser/GithubRepoChooser';
 import React from 'react';
 import Link from 'next/link';
+import InviteCodeViewer from '../InviteCodeViewer/InviteCodeViewer';
+import ProjectTeamUsers from '../ProjectTeamUsers/ProjectTeamUsers';
 
-export default function ProjectSettings(project: Project) {
+export default function ProjectSettings(project: ProjectWithUsers) {
   const [ghRepo, setGhRepo] = React.useState('');
   const [hasSubmitted, setHasSubmitted] = React.useState(false);
   const apiUrl = `https://${window.location.hostname}/api/feedback/${project.id}`;
@@ -121,6 +123,41 @@ export default function ProjectSettings(project: Project) {
                 />
               </CardContent>
             </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Your team</CardTitle>
+                <CardDescription>Invite people to join the project!</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <InviteCodeViewer code={project.inviteCode} />
+                <ProjectTeamUsers UserProject={project.UserProject} />
+              </CardContent>
+            </Card>
+            {/* <Card>
+              <CardHeader>
+                <CardTitle>Project Deletion</CardTitle>
+                <CardDescription>Permanently delete your project</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm">
+                  This action is irreversible. All feedback and settings will be lost.
+                </p>
+                <UniversalForm
+                  fields={[
+                    {
+                      name: 'id',
+                      label: 'ID',
+                      type: 'hidden',
+                      value: project.id,
+                    },
+                  ]}
+                  schemaName={'deleteProject'}
+                  action={editProject}
+                  submitText="Delete Project"
+                  submitClassname="!mt-0"
+                />
+              </CardContent>
+            </Card> */}
           </div>
         </TabsContent>
 
@@ -296,4 +333,10 @@ function stripIndents(strings: TemplateStringsArray, ...values: any[]) {
     .map((line) => (line ? ' '.repeat(minIndent + 2) + line : line))
     .join('\n')
     .trim();
+}
+
+interface ProjectWithUsers extends Project {
+  UserProject: (UserProject & {
+    user: User;
+  })[];
 }

@@ -8,7 +8,11 @@ export default async function Page() {
   const { user } = await validateRequest();
   const db = await prisma.project.findMany({
     where: {
-      userId: user!.id,
+      UserProject: {
+        some: {
+          userId: user!.id,
+        },
+      },
     },
   });
   if (db.length === 0) {
@@ -16,9 +20,16 @@ export default async function Page() {
       <div className="text-center flex flex-col gap-4 pt-4">
         <h2>No projects found</h2>
         <p className="text-muted-foreground">Create a project to get started</p>
-        <Link href="/create">
-          <Button size={'sm'}>Create Project</Button>
-        </Link>
+        <div className="flex justify-center gap-5">
+          <Link href="/create">
+            <Button size={'sm'}>Create</Button>
+          </Link>
+          <Link href="/join">
+            <Button size={'sm'} variant={'secondary'}>
+              Join
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }

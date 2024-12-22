@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const { id } = await params;
   const { user } = await validateRequest();
   const project = await prisma.project.findFirst({
-    where: { id, userId: user!.id },
+    where: { id, UserProject: { some: { userId: user!.id } } },
     include: { feedback: true },
   });
 
@@ -97,11 +97,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                   {Object.entries(JSON.parse(feedback.customData)).map(([key, value]) => (
                     <TableCell key={key}>{value as string}</TableCell>
                   ))}
-                  <TableCell className='flex gap-2'>
+                  <TableCell className="flex gap-2">
                     <FeedbackView feedback={feedback} />
-                    {project.github && (
-                      <GithubIssueCreate project={project} feedback={feedback} />
-                    )}
+                    {project.github && <GithubIssueCreate project={project} feedback={feedback} />}
                   </TableCell>
                 </TableRow>
               ))}

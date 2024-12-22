@@ -27,9 +27,10 @@ export async function create(prev: any, formData: FormData) {
   const dbCreate = await prisma.project.create({
     data: {
       ...zod.data,
-      user: {
-        connect: {
-          id: user.id,
+      UserProject: {
+        create: {
+          userId: user.id,
+          isOwner: true,
         },
       },
     },
@@ -141,7 +142,14 @@ export async function githubTestIssue(prev: any, formData: FormData) {
       id: zod.data.id,
     },
     include: {
-      user: true,
+      UserProject: {
+        where: {
+          userId: user.id,
+        },
+        include: {
+          user: true,
+        },
+      }
     },
   });
   if (!project) {
@@ -152,7 +160,7 @@ export async function githubTestIssue(prev: any, formData: FormData) {
     const [owner, repo] = project.github!.split('/').slice(-2);
     let issueCreated = false;
 
-    for (const installationId of project.user.installations) {
+    for (const installationId of project.UserProject[0].user.installations) {
       if (issueCreated) break;
 
       const installation = await octokitApp.getInstallationOctokit(Number(installationId));
@@ -199,7 +207,14 @@ export async function githubCreateIssue(prev: any, formData: FormData) {
       id: zod.data.project,
     },
     include: {
-      user: true,
+      UserProject: {
+        where: {
+          userId: user.id,
+        },
+        include: {
+          user: true,
+        }
+      },
     },
   });
   if (!project) {
@@ -209,7 +224,7 @@ export async function githubCreateIssue(prev: any, formData: FormData) {
   try {
     const [owner, repo] = project.github!.split('/').slice(-2);
 
-    for (const installationId of project.user.installations) {
+    for (const installationId of project.UserProject[0].user.installations) {
       const installation = await octokitApp.getInstallationOctokit(Number(installationId));
       const getRepo = await installation
         .request('GET /repos/{owner}/{repo}', {

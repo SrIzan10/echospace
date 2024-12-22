@@ -18,6 +18,7 @@ import { ThemeSwitcher } from "../ThemeSwitcher/ThemeSwitcher"
 export const links = [
   { href: '/dashboard', name: 'Dashboard' },
   { href: '/create', name: 'Create' },
+  { href: '/join', name: 'Join' },
 ]
 
 function NavbarLinks() {
