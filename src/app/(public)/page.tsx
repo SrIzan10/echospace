@@ -2,6 +2,7 @@ import CloseTabNotice from '@/components/app/CloseTabNotice/CloseTabNotice';
 import LandingStepper from '@/components/app/LandingStepper/LandingStepper';
 import Video from '@/components/app/Video/Video';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -13,6 +14,14 @@ export default function Home() {
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
+              <Link
+                href="https://cloud-jblc9ujpj-hack-club-bot.vercel.app/0kooha-2024-12-22-23-23-29.mp4"
+                target="_blank"
+              >
+                <div className="flex items-center rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
+                  Now you can add team members! <ArrowRight className="ml-2 w-4 h-4" />
+                </div>
+              </Link>
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
                   User feedback for developers
