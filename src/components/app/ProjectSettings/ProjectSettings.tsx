@@ -25,9 +25,12 @@ import React from 'react';
 import Link from 'next/link';
 import InviteCodeViewer from '../InviteCodeViewer/InviteCodeViewer';
 import ProjectTeamUsers from '../ProjectTeamUsers/ProjectTeamUsers';
+import { useSession } from '@/lib/providers/SessionProvider';
 
 export default function ProjectSettings(project: ProjectWithUsers) {
+  const { user } = useSession();
   const [ghRepo, setGhRepo] = React.useState('');
+  const [ghInstallationId, setGhInstallationId] = React.useState('');
   const [hasSubmitted, setHasSubmitted] = React.useState(false);
   const apiUrl = `https://${window.location.hostname}/api/feedback/${project.id}`;
   React.useEffect(() => {
@@ -59,7 +62,9 @@ export default function ProjectSettings(project: ProjectWithUsers) {
       <Tabs defaultValue="project" className="w-full">
         <TabsList className="mb-4">
           <TabsTrigger value="project">Project</TabsTrigger>
-          <TabsTrigger value="github">Github</TabsTrigger>
+          {user?.id === project.UserProject.find((u) => u.isOwner)?.userId && (
+            <TabsTrigger value="github">Github</TabsTrigger>
+          )}
           <TabsTrigger value="api">API</TabsTrigger>
         </TabsList>
 
@@ -161,61 +166,46 @@ export default function ProjectSettings(project: ProjectWithUsers) {
           </div>
         </TabsContent>
 
-        <TabsContent value="github" className="grid gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Github Integration</CardTitle>
-              <CardDescription>Connect your project to Github</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <GithubRepoChooser
-                onSelect={(repo) => {
-                  setGhRepo(`https://github.com/${repo}`);
-                }}
-                selected={project.github ? project.github.replace('https://github.com/', '') : ''}
-              />
-              <p className="text-muted-foreground text-xs mt-2">
-                Not the results you were expecting? You may have not allowed your user in the{' '}
-                <Link
-                  href="https://github.com/apps/echospacedev/installations/new"
-                  target="_blank"
-                  className="text-primary"
-                >
-                  installation settings
-                </Link>
-                .
-              </p>
-              <UniversalForm
-                fields={[
-                  {
-                    name: 'github',
-                    label: 'GitHub Repository',
-                    type: 'hidden',
-                    value: ghRepo,
-                  },
-                  {
-                    name: 'id',
-                    label: 'ID',
-                    type: 'hidden',
-                    value: project.id,
-                  },
-                ]}
-                key={ghRepo}
-                schemaName={'githubSettings'}
-                action={githubSettings}
-                onActionComplete={() => setHasSubmitted(true)}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Issue submission testing</CardTitle>
-              <CardDescription>Make sure your setup works!</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {hasSubmitted ? (
+        {user?.id === project.UserProject.find((u) => u.isOwner)?.userId && (
+          <TabsContent value="github" className="grid gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Github Integration</CardTitle>
+                <CardDescription>Connect your project to Github</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <GithubRepoChooser
+                  onSelect={(repo, id) => {
+                    setGhRepo(`https://github.com/${repo}`);
+                    setGhInstallationId(id);
+                  }}
+                  selected={project.github ? project.github.replace('https://github.com/', '') : ''}
+                />
+                <p className="text-muted-foreground text-xs mt-2">
+                  Not the results you were expecting? You may have not allowed your user in the{' '}
+                  <Link
+                    href="https://github.com/apps/echospacedev/installations/new"
+                    target="_blank"
+                    className="text-primary"
+                  >
+                    installation settings
+                  </Link>
+                  .
+                </p>
                 <UniversalForm
                   fields={[
+                    {
+                      name: 'github',
+                      label: 'GitHub Repository',
+                      type: 'hidden',
+                      value: ghRepo,
+                    },
+                    {
+                      name: 'installationId',
+                      label: 'Installation ID',
+                      type: 'hidden',
+                      value: ghInstallationId,
+                    },
                     {
                       name: 'id',
                       label: 'ID',
@@ -223,20 +213,44 @@ export default function ProjectSettings(project: ProjectWithUsers) {
                       value: project.id,
                     },
                   ]}
-                  schemaName={'githubTestIssue'}
-                  action={githubTestIssue}
-                  submitText="Create test issue"
-                  submitClassname="!mt-0"
+                  key={ghRepo}
+                  schemaName={'githubSettings'}
+                  action={githubSettings}
+                  onActionComplete={() => setHasSubmitted(true)}
                 />
-              ) : (
-                <p className="text-muted-foreground text-sm">
-                  You need to connect your project to a GitHub repository before you can test issue
-                  submission.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Issue submission testing</CardTitle>
+                <CardDescription>Make sure your setup works!</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {hasSubmitted ? (
+                  <UniversalForm
+                    fields={[
+                      {
+                        name: 'id',
+                        label: 'ID',
+                        type: 'hidden',
+                        value: project.id,
+                      },
+                    ]}
+                    schemaName={'githubTestIssue'}
+                    action={githubTestIssue}
+                    submitText="Create test issue"
+                    submitClassname="!mt-0"
+                  />
+                ) : (
+                  <p className="text-muted-foreground text-sm">
+                    You need to connect your project to a GitHub repository before you can test
+                    issue submission.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         <TabsContent value="api" className="space-y-5">
           <Card>

@@ -33,15 +33,16 @@ model Session {
 }
 
 model Project {
-  id            String   @id @default(cuid())
-  name          String
-  description   String
-  github        String?
-  customData    String[]
-  rateLimitReq  Int      @default(5)
-  rateLimitTime Int      @default(60)
+  id                   String   @id @default(cuid())
+  name                 String
+  description          String
+  github               String?
+  githubInstallationId String?
+  customData           String[]
+  rateLimitReq         Int      @default(5)
+  rateLimitTime        Int      @default(60)
   // 8 digit random number
-  inviteCode    String   @unique @default(dbgenerated("floor(random() * 90000000 + 10000000)::text"))
+  inviteCode           String   @unique @default(dbgenerated("floor(random() * 90000000 + 10000000)::text"))
 
   users       User[]        @relation("UserProjects")
   feedback    Feedback[]

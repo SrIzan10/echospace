@@ -31,9 +31,10 @@ export default function ProjectTeamUsers(userProject: ProjectTeamUsersProps) {
     });
   };
 
+  // toReversed shows the owner at the top, then at join order
   return (
     <ul className="space-y-2 pt-5">
-      {users.map((user) => (
+      {users.toReversed().map((user) => (
         <li
           key={user.userId}
           className="flex items-center justify-between p-3 rounded-lg shadow bg-accent"
@@ -46,7 +47,7 @@ export default function ProjectTeamUsers(userProject: ProjectTeamUsersProps) {
               />
               <AvatarFallback>{user.user.username.toUpperCase()}</AvatarFallback>
             </Avatar>
-            <span className="font-medium">{user.user.username}</span>
+            <span className="font-medium">{user.user.username}{user.isOwner && ' (owner)'}</span>
           </div>
           <Button
             variant="destructive"

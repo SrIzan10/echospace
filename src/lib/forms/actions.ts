@@ -107,6 +107,7 @@ export async function customData(prev: any, formData: FormData) {
 }
 
 export async function githubSettings(prev: any, formData: FormData) {
+  // @ts-ignore transforming string to number makes the types go crazy
   const zod = await zodVerify(githubSettingsSchema, formData);
   const { user, session } = await validateRequest();
   if (!user) {
@@ -122,6 +123,7 @@ export async function githubSettings(prev: any, formData: FormData) {
     },
     data: {
       github: zod.data.github,
+      githubInstallationId: zod.data.installationId.toString(),
     },
   });
   return { success: true, id: dbUpdate.id };
@@ -149,40 +151,34 @@ export async function githubTestIssue(prev: any, formData: FormData) {
         include: {
           user: true,
         },
-      }
+      },
     },
   });
   if (!project) {
     return { success: false, error: 'Project not found' };
   }
+  if (!project.github || !project.githubInstallationId) {
+    return { success: false, error: 'Github settings not found' };
+  }
 
   try {
     const [owner, repo] = project.github!.split('/').slice(-2);
-    let issueCreated = false;
-
-    for (const installationId of project.UserProject[0].user.installations) {
-      if (issueCreated) break;
-
-      const installation = await octokitApp.getInstallationOctokit(Number(installationId));
-      const getRepo = await installation
-        .request('GET /repos/{owner}/{repo}', {
-          owner,
-          repo,
-        })
-        .catch(() => ({ status: 404 }));
-      if (getRepo.status === 200) {
-        const createIssue = await installation.request('POST /repos/{owner}/{repo}/issues', {
-          owner,
-          repo,
-          title: 'Test issue',
-          body: "### You are all set! 🎉\n\nIf you're reading this, the test issue has been created successfully!",
-        });
-
-        if (createIssue.status === 201) {
-          issueCreated = true;
-          break;
-        }
-      }
+    const installation = await octokitApp.getInstallationOctokit(
+      parseInt(project.githubInstallationId!)
+    );
+    const getRepo = await installation
+      .request('GET /repos/{owner}/{repo}', {
+        owner,
+        repo,
+      })
+      .catch(() => ({ status: 404 }));
+    if (getRepo.status === 200) {
+      await installation.request('POST /repos/{owner}/{repo}/issues', {
+        owner,
+        repo,
+        title: 'Test issue',
+        body: "### You are all set! 🎉\n\nIf you're reading this, the test issue has been created successfully!",
+      });
     }
   } catch (e) {
     console.error(e);
@@ -213,7 +209,7 @@ export async function githubCreateIssue(prev: any, formData: FormData) {
         },
         include: {
           user: true,
-        }
+        },
       },
     },
   });
@@ -223,27 +219,22 @@ export async function githubCreateIssue(prev: any, formData: FormData) {
 
   try {
     const [owner, repo] = project.github!.split('/').slice(-2);
-
-    for (const installationId of project.UserProject[0].user.installations) {
-      const installation = await octokitApp.getInstallationOctokit(Number(installationId));
-      const getRepo = await installation
-        .request('GET /repos/{owner}/{repo}', {
-          owner,
-          repo,
-        })
-        .catch(() => ({ status: 404 }));
-      if (getRepo.status === 200) {
-        const createIssue = await installation.request('POST /repos/{owner}/{repo}/issues', {
-          owner,
-          repo,
-          title: zod.data.title,
-          body: `### Feedback\n\nFeedback ID: ${zod.data.feedback}\n\n### Message\n\n${zod.data.message}`,
-        });
-
-        if (createIssue.status === 201) {
-          break;
-        }
-      }
+    const installation = await octokitApp.getInstallationOctokit(
+      Number(project.githubInstallationId)
+    );
+    const getRepo = await installation
+      .request('GET /repos/{owner}/{repo}', {
+        owner,
+        repo,
+      })
+      .catch(() => ({ status: 404 }));
+    if (getRepo.status === 200) {
+      await installation.request('POST /repos/{owner}/{repo}/issues', {
+        owner,
+        repo,
+        title: zod.data.title,
+        body: `### Feedback\n\nFeedback ID: ${zod.data.feedback}\n\n### Message\n\n${zod.data.message}`,
+      });
     }
   } catch (e) {
     console.error(e);

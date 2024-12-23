@@ -32,6 +32,10 @@ export const githubSettingsSchema = z.object({
       'Github URL must be "https://github.com/user/repo"'
     )
     .nonempty(),
+  installationId: z
+    .string()
+    .nonempty()
+    .transform((val) => parseInt(val, 10)),
 });
 
 export const githubTestIssueSchema = z.object({

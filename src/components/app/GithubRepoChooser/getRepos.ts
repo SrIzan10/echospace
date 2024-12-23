@@ -9,7 +9,7 @@ export async function getRepos() {
     return { success: false, error: 'You must be logged in' };
   }
 
-  const repoList: Array<{ name: string; pushed_at: string }> = [];
+  const repoList: Array<{ name: string; pushed_at: string; installationId: string }> = [];
 
   for (const installation of user.installations) {
     const octokit = await octokitApp.getInstallationOctokit(Number(installation));
@@ -28,6 +28,7 @@ export async function getRepos() {
     const repoData = repos.repositories.map((repo) => ({
       name: repo.full_name,
       pushed_at: repo.pushed_at ?? '1970-01-01T00:00:00Z',
+      installationId: installation,
     }));
 
     repoList.push(...repoData);
@@ -35,7 +36,9 @@ export async function getRepos() {
 
   const sortedRepos = repoList
     .sort((a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime())
-    .map((repo) => repo.name);
+    .map((repo) => {
+      return { name: repo.name, installationId: repo.installationId };
+    });
 
   return { success: true, repos: sortedRepos };
 }

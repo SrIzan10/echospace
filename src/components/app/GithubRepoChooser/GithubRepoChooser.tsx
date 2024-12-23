@@ -20,7 +20,7 @@ import { getRepos } from './getRepos';
 export default function GithubRepoChooser(props: Props) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
-  const [repos, setRepos] = React.useState<string[]>([]);
+  const [repos, setRepos] = React.useState<{ name: string, installationId: string }[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [displayText, setDisplayText] = React.useState('Select a repository');
 
@@ -30,16 +30,22 @@ export default function GithubRepoChooser(props: Props) {
       if (response.success) {
         setRepos(response.repos!);
         setIsLoading(false);
+        if (props.selected) {
+          setValue(props.selected);
+        }
       }
     });
-    setValue(props.selected ?? '');
   }, []);
   React.useEffect(() => {
-    props.onSelect(value);
-  }, [value]);
+    if (isLoading || !value) return;
+    const repo = repos.find((repo) => repo.name === value);
+    if (repo) {
+      props.onSelect(value, repo.installationId);
+    }
+  }, [value, repos, isLoading, props.onSelect]);
   React.useEffect(() => {
-    if (value.length > 0) {
-      setDisplayText(repos.find((repo) => repo === value)!);
+    if (value.length > 0 && !isLoading) {
+      setDisplayText(repos.find((repo) => repo.name === value)!.name);
     } else if (repos.length === 0) {
       setDisplayText('No repositories found');
     } else {
@@ -69,16 +75,15 @@ export default function GithubRepoChooser(props: Props) {
             <CommandGroup>
               {repos.map((repo) => (
                 <CommandItem
-                  key={repo}
-                  value={repo}
+                  key={repo.name}
+                  value={repo.name}
                   onSelect={(currentValue) => {
-                    console.log(currentValue, value);
-                    setValue(currentValue === value ? '' : currentValue);
+                    setValue(currentValue);
                     setOpen(false);
                   }}
                 >
-                  {repo}
-                  <Check className={cn('ml-auto', value === repo ? 'opacity-100' : 'opacity-0')} />
+                  {repo.name}
+                  <Check className={cn('ml-auto', value === repo.name ? 'opacity-100' : 'opacity-0')} />
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -90,6 +95,6 @@ export default function GithubRepoChooser(props: Props) {
 }
 
 interface Props {
-  onSelect: (repo: string) => void;
+  onSelect: (repo: string, installationId: string) => void;
   selected?: string;
 }
