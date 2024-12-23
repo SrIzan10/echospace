@@ -1,3 +1,4 @@
+import DottedCreateCard from '@/components/app/DottedCreateCard/DottedCreateCard';
 import ProjectCard from '@/components/app/ProjectCard/ProjectCard';
 import { Button } from '@/components/ui/button';
 import { validateRequest } from '@/lib/auth';
@@ -38,6 +39,7 @@ export default async function Page() {
       {db.map((d) => (
         <ProjectCard key={d.id} {...d} />
       ))}
+      <DottedCreateCard />
     </div>
   );
 }
