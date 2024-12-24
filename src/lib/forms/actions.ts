@@ -13,6 +13,7 @@ import prisma from '../db';
 import zodVerify from '../zodVerify';
 import { createSchema } from './zod';
 import { octokitApp } from '../octokitApp';
+import redis from '../db/redis';
 
 export async function create(prev: any, formData: FormData) {
   const zod = await zodVerify(createSchema, formData);
@@ -35,6 +36,8 @@ export async function create(prev: any, formData: FormData) {
       },
     },
   });
+  redis.set(`ratelimit:${dbCreate.id}`, `${dbCreate.rateLimitReq}:${dbCreate.rateLimitTime}`);
+
   return { success: true, id: dbCreate.id };
 }
 
@@ -79,6 +82,8 @@ export async function ratelimitChange(prev: any, formData: FormData) {
       rateLimitTime: zod.data.duration,
     },
   });
+  redis.set(`ratelimit:${zod.data.id}`, `${zod.data.requests}:${zod.data.duration}`);
+
   return { success: true, id: dbUpdate.id };
 }
 

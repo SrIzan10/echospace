@@ -1,4 +1,5 @@
 import prisma from '@/lib/db';
+import redis from '@/lib/db/redis';
 import ratelimit from '@/lib/ratelimit';
 
 export const dynamic = 'force-dynamic';
@@ -6,22 +7,19 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request, { params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
   const body = await request.json();
-  const queryProject = await prisma.project.findFirst({
-    where: {
-      id: projectId,
-    },
-  });
-  if (!queryProject) {
+
+  const ratelimitInfo = await redis.get(`ratelimit:${projectId}`);
+  if (!ratelimitInfo) {
     return Response.json({ success: false, error: 'Project not found' }, { status: 404 });
   }
 
-  // TODO: optimize to query redis instead of prisma first.
+  const [rateLimitReq, rateLimitTime] = ratelimitInfo.split(':').map(Number);
   const ip = request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip');
   const queryRL = await ratelimit(
     ip!,
-    queryProject.id,
-    queryProject.rateLimitReq,
-    queryProject.rateLimitTime
+    projectId,
+    rateLimitReq,
+    rateLimitTime
   );
   if (queryRL.exceeded) {
     return Response.json(
@@ -31,6 +29,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
       },
       { status: 429, headers: { 'Retry-After': queryRL.reset.toString() } }
     );
+  }
+
+  const queryProject = await prisma.project.findFirst({
+    where: {
+      id: projectId,
+    },
+  });
+  if (!queryProject) {
+    return Response.json({ success: false, error: 'Project not found' }, { status: 404 });
   }
 
   // Convert customKeys to regular array and add message
