@@ -43,7 +43,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   // maybe it's not clean enough but who cares
   return (
     <div className="p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <Breadcrumb className="pb-5">
           <BreadcrumbList>
             <BreadcrumbItem>

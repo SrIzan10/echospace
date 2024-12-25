@@ -18,7 +18,7 @@ export default function Home() {
                 href="https://cloud-jblc9ujpj-hack-club-bot.vercel.app/0kooha-2024-12-22-23-23-29.mp4"
                 target="_blank"
               >
-                <div className="flex items-center rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
+                <div className="flex items-center rounded-lg px-3 py-1 text-sm bg-mantle">
                   Now you can add team members! <ArrowRight className="ml-2 w-4 h-4" />
                 </div>
               </Link>
@@ -46,7 +46,7 @@ export default function Home() {
           </div>
         </section>
         <section
-          className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-900"
+          className="w-full py-12 md:py-24 lg:py-32 bg-mantle"
           id="features"
         >
           <div className="container px-4 md:px-6">
@@ -56,7 +56,7 @@ export default function Home() {
                   {
                     title: 'Create a project',
                     description:
-                      'Create a project and invite your team members (soon) to start collecting feedback',
+                      'Create a project and invite your team members to start collecting feedback',
                     html: (
                       <Video
                         src="https://cloud-flt5r19p6-hack-club-bot.vercel.app/0kooha-2024-12-15-21-37-18.mp4"
@@ -73,7 +73,7 @@ export default function Home() {
                     html: (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src="https://cloud-9x06b7lfe-hack-club-bot.vercel.app/0carbon_2_.png"
+                        src="https://cloud-81pelcjv5-hack-club-bot.vercel.app/0carbon_3_.png"
                         alt="Code example"
                         className="w-full rounded-lg"
                       />
