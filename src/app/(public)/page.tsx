@@ -2,11 +2,13 @@ import CloseTabNotice from '@/components/app/CloseTabNotice/CloseTabNotice';
 import LandingStepper from '@/components/app/LandingStepper/LandingStepper';
 import Video from '@/components/app/Video/Video';
 import { Button } from '@/components/ui/button';
+import { validateRequest } from '@/lib/auth';
 import { ArrowRight, Github } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
-export default function Home() {
+export default async function Home() {
+  const { user } = await validateRequest();
   return (
     <>
       <CloseTabNotice />
@@ -32,9 +34,15 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex gap-5">
-                <Link href="/auth">
-                  <Button>Get started</Button>
-                </Link>
+                {user ? (
+                  <Link href="/dashboard">
+                    <Button>Dashboard</Button>
+                  </Link>
+                ) : (
+                  <Link href="/auth">
+                    <Button>Get started</Button>
+                  </Link>
+                )}
                 <Link href="https://github.com/SrIzan10/echospace" target="_blank">
                   <Button variant="secondary" className="flex">
                     <Github className="w-4 h-4 mr-2" />
@@ -45,10 +53,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section
-          className="w-full py-12 md:py-24 lg:py-32 bg-mantle"
-          id="features"
-        >
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-mantle" id="features">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <LandingStepper
