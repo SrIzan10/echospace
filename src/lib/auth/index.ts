@@ -9,7 +9,7 @@ export const github = new GitHub(
   process.env.GITHUB_CLIENT!,
   process.env.GITHUB_SECRET!,
   `${
-    process.env.NODE_ENV === 'production' ? 'https://echospace.srizan.dev' : 'http://localhost:3000'
+    process.env.NODE_ENV === 'production' ? 'https://echospace.dev' : 'http://localhost:3000'
   }/auth/github/callback`
 );
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
