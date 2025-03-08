@@ -13,6 +13,8 @@ const jbmono = JetBrains_Mono({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Echospace',
   description: 'User feedback for developers.',
+  // @ts-ignore
+  'darkreader-lock': 'asdf'
 };
 
 export default async function RootLayout({
