@@ -4,8 +4,8 @@ services:
     user: 1000:1000
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: S+xyPXPDcYNQtTy3hUNoC9eBwmsoGA
+      POSTGRES_PASSWORD: aegkerkoebkdsbjwlkthwjthlkewbmklbejlk
     volumes:
       - ./psql:/var/lib/postgresql/data
     ports:
-      - 5555:5432
+      - 5432:5432

@@ -184,7 +184,7 @@ export default function ProjectSettings(project: ProjectWithUsers) {
                 <p className="text-muted-foreground text-xs mt-2">
                   Not the results you were expecting? You may have not allowed your user in the{' '}
                   <Link
-                    href="https://github.com/apps/echospacedev/installations/new"
+                    href={`https://github.com/apps/echospacedev${process.env.NODE_ENV === 'development' ? 'el' : ''}/installations/new`}
                     target="_blank"
                     className="text-primary"
                   >

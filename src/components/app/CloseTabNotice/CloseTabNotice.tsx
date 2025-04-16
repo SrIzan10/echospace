@@ -20,9 +20,8 @@ export default function CloseTabNotice() {
         <DialogHeader>
           <DialogTitle>You are back!</DialogTitle>
           <DialogDescription>
-            Now that the github integration is installed, you can close this tab and refresh the
-            other tab to see the repos! (or maybe not, in case of an organization it may need
-            approval)
+            Now close this tab and refresh the other one. In case of an organization, it may need
+            approval from administrators
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

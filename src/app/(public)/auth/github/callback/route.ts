@@ -72,7 +72,6 @@ export async function GET(request: Request): Promise<Response> {
     });
   } catch (e) {
     // the specific error message depends on the provider
-    console.error(e);
     if (e instanceof OAuth2RequestError) {
       // invalid code
       console.error(e);
@@ -80,13 +79,9 @@ export async function GET(request: Request): Promise<Response> {
         status: 400,
       });
     }
+    console.error(e);
     return new Response(null, {
       status: 500,
     });
   }
-}
-
-interface GitHubUser {
-  id: number;
-  login: string;
 }
