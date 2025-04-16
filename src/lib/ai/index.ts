@@ -1,6 +1,10 @@
 import OpenAI from 'openai';
 
 export const openai = new OpenAI({
-  apiKey: process.env.GROQ_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
+  apiKey: process.env.OPENROUTER_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
+  defaultHeaders: {
+    "HTTP-Referer": "https://echospace.dev",
+    "X-Title": "Echospace",
+  },
 });

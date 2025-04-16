@@ -19,7 +19,7 @@ export default async function fill(message: string) {
   }
 
   const aiResponse = await openai.chat.completions.create({
-    model: 'llama3-70b-8192',
+    model: 'liquid/lfm-3b',
     messages: [
       {
         role: 'system',
