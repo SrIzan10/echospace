@@ -16,7 +16,7 @@ export default async function Home() {
       <CloseTabNotice />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-b from-background to-muted/50 relative overflow-hidden">
+        <section className="w-full py-20 md:py-32 lg:py-40 bg-linear-to-b from-background to-muted/50 relative overflow-hidden">
           <div className="absolute inset-0 bg-grid-white/10 [mask-image:radial-gradient(white,transparent_70%)]" />
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-6 text-center">
@@ -31,7 +31,7 @@ export default async function Home() {
                 </Link>
               </Badge>
               <div className="space-y-4 max-w-3xl">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none bg-clip-text text-transparent bg-linear-to-r from-primary to-primary/60">
                   User feedback for developers
                 </h1>
                 <p className="mx-auto max-w-[700px] text-lg text-muted-foreground md:text-xl">
@@ -66,7 +66,7 @@ export default async function Home() {
           </div>
           
           {/* Abstract Decoration */}
-          <div className="absolute -bottom-48 left-0 right-0 h-96 bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 blur-3xl opacity-50" />
+          <div className="absolute -bottom-48 left-0 right-0 h-96 bg-linear-to-r from-primary/20 via-secondary/20 to-primary/20 blur-3xl opacity-50" />
         </section>
 
         {/* Features Cards */}
@@ -190,7 +190,7 @@ export default async function Home() {
         {/* CTA Section */}
         <section className="w-full py-12 md:py-24">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center bg-gradient-to-r from-primary/5 to-secondary/5 p-8 rounded-xl">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center bg-linear-to-r from-primary/5 to-secondary/5 p-8 rounded-xl">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Ready to get started?</h2>
               <p className="text-muted-foreground md:text-lg max-w-[600px]">
                 Join developers who are building better products with user feedback

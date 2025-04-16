@@ -9,3 +9,10 @@ services:
       - ./psql:/var/lib/postgresql/data
     ports:
       - 5432:5432
+  redis:
+    image: redis:alpine
+    user: 1000:1000
+    volumes:
+      - ./redis:/data
+    ports:
+      - 6379:6379

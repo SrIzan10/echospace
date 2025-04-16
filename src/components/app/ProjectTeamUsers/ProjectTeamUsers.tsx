@@ -37,7 +37,7 @@ export default function ProjectTeamUsers(userProject: ProjectTeamUsersProps) {
       {users.toReversed().map((user) => (
         <li
           key={user.userId}
-          className="flex items-center justify-between p-3 rounded-lg shadow bg-accent"
+          className="flex items-center justify-between p-3 rounded-lg shadow-sm bg-accent"
         >
           <div className="flex items-center space-x-3">
             <Avatar>

@@ -45,7 +45,7 @@ export default function Navbar() {
   const [, logoutAction] = useActionState(logout, null);
   return (
     <>
-      <nav className="flex items-center justify-between h-16 px-4 md:shadow border-b md:border-0 md:rounded-md md:mt-2 gap-3 shrink-0 max-w-6xl mx-auto bg-mantle">
+      <nav className="flex items-center justify-between h-16 px-4 md:shadow-sm border-b md:border-0 md:rounded-md md:mt-2 gap-3 shrink-0 max-w-6xl mx-auto bg-mantle">
         {/* Left section */}
         <div className="flex items-center">
           <Link href="/" className="hidden md:flex">

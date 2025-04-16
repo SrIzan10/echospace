@@ -28,7 +28,7 @@ export default function CreateForm() {
             },
           ]}
           submitText="Submit"
-          submitClassname="w-full !mt-5"
+          submitClassname="w-full mt-5!"
           onActionComplete={(res) => {
             // @ts-ignore yea
             if (res && res.id) {

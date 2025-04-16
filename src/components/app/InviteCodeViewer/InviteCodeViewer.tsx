@@ -13,7 +13,7 @@ export default function InviteCodeViewer({ code }: { code: string }) {
         type="text"
         id="inviteCode"
         placeholder="Invite code"
-        className={hover ? '' : 'blur-sm'}
+        className={hover ? '' : 'blur-xs'}
         onChange={() => {}}
         onMouseOver={() => setHover(true)}
         onMouseOut={() => setHover(false)}

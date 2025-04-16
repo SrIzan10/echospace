@@ -159,7 +159,7 @@ export default function ProjectSettings(project: ProjectWithUsers) {
                   schemaName={'deleteProject'}
                   action={editProject}
                   submitText="Delete Project"
-                  submitClassname="!mt-0"
+                  submitClassname="mt-0!"
                 />
               </CardContent>
             </Card> */}
@@ -239,7 +239,7 @@ export default function ProjectSettings(project: ProjectWithUsers) {
                     schemaName={'githubTestIssue'}
                     action={githubTestIssue}
                     submitText="Create test issue"
-                    submitClassname="!mt-0"
+                    submitClassname="mt-0!"
                   />
                 ) : (
                   <p className="text-muted-foreground text-sm">
