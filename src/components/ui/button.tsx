@@ -42,22 +42,32 @@ export interface ButtonProps
   loading?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, loading, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        disabled={loading}
-        ref={ref}
-        {...props}
-      >
-        {loading && <LoaderCircle className={cn('h-4 w-4 animate-spin', props.children && 'mr-2')} />}
-        {props.children}
-      </Comp>
-    )
+const Button = (
+  {
+    ref,
+    className,
+    variant,
+    size,
+    asChild = false,
+    loading,
+    ...props
+  }: ButtonProps & {
+    ref: React.RefObject<HTMLButtonElement>;
   }
-)
+) => {
+  const Comp = asChild ? Slot : "button"
+  return (
+    <Comp
+      className={cn(buttonVariants({ variant, size, className }))}
+      disabled={loading}
+      ref={ref}
+      {...props}
+    >
+      {loading && <LoaderCircle className={cn('h-4 w-4 animate-spin', props.children && 'mr-2')} />}
+      {props.children}
+    </Comp>
+  )
+}
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
