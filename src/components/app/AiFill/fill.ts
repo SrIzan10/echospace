@@ -31,10 +31,9 @@ export default async function fill(message: string) {
         content: message,
       },
     ],
-    response_format: { type: 'json_object' },
   });
 
-  const aiMsg = aiResponse.choices[0].message.content!;
+  const aiMsg = aiResponse.choices[0].message.content!.replace('```json', '').replace('```', '');
   const zod = fillSchema.safeParse(JSON.parse(aiMsg));
   if (!zod.success) {
     return {
