@@ -8,9 +8,22 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   const { projectId } = await params;
   const body = await request.json();
 
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
+
   const ratelimitInfo = await redis.get(`ratelimit:${projectId}`);
   if (!ratelimitInfo) {
-    return Response.json({ success: false, error: 'Project not found' }, { status: 404 });
+    return new Response(JSON.stringify({ success: false, error: 'Project not found' }), {
+      status: 404,
+      headers: corsHeaders,
+    });
   }
 
   const [rateLimitReq, rateLimitTime] = ratelimitInfo.split(':').map(Number);
@@ -22,12 +35,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
     rateLimitTime
   );
   if (queryRL.exceeded) {
-    return Response.json(
-      {
+    return new Response(
+      JSON.stringify({
         success: false,
         error: `Rate limit exceeded. Try again in ${queryRL.reset} seconds.`,
-      },
-      { status: 429, headers: { 'Retry-After': queryRL.reset.toString() } }
+      }),
+      {
+        status: 429,
+        headers: {
+          ...corsHeaders,
+          'Retry-After': queryRL.reset.toString(),
+        },
+      }
     );
   }
 
@@ -37,7 +56,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
     },
   });
   if (!queryProject) {
-    return Response.json({ success: false, error: 'Project not found' }, { status: 404 });
+    return new Response(JSON.stringify({ success: false, error: 'Project not found' }), {
+      status: 404,
+      headers: corsHeaders,
+    });
   }
 
   // Convert customKeys to regular array and add message
@@ -51,26 +73,32 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   const invalidKeys = bodyKeys.filter((key) => !customKeys.includes(key));
 
   if (keysLeft.length || invalidKeys.length) {
-    return Response.json(
-      {
+    return new Response(
+      JSON.stringify({
         success: false,
         error: `Invalid keys: ${invalidKeys.join(', ')}, keys left: ${keysLeft.join(', ')}`,
-      },
-      { status: 400 }
+      }),
+      {
+        status: 400,
+        headers: corsHeaders,
+      }
     );
   }
   // check if all values of the keys are strings. this will prevent
   // any type of injection or unexpected behavior.
   const invalidValues = Object.entries(body).filter(([key, value]) => typeof value !== 'string');
   if (invalidValues.length) {
-    return Response.json(
-      {
+    return new Response(
+      JSON.stringify({
         success: false,
         error: `Invalid values for keys: ${invalidValues
           .map(([key]) => key)
           .join(', ')}. Make sure it is a string.`,
-      },
-      { status: 400 }
+      }),
+      {
+        status: 400,
+        headers: corsHeaders,
+      }
     );
   }
 
@@ -89,5 +117,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
     },
   });
 
-  return Response.json({ success: true });
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: corsHeaders,
+  });
 }
